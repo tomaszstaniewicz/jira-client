@@ -33,6 +33,7 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONNull;
+import net.sf.json.JsonConfig;
 
 /**
  * Utility functions for translating between JSON and fields.
@@ -753,6 +754,11 @@ public final class Field {
                 return ((TimeTracking) value).toJsonObject();
 
             return value;
+        } else if (m.type.equals("option-with-child")) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.accumulateAll((Map) value);
+            return jsonObject;
+            //return new JSONObject((Map)value);
         }
 
         throw new UnsupportedOperationException(m.type + " is not a supported field type");
