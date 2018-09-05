@@ -159,6 +159,8 @@ public class Version extends Resource {
      * 
      * @param version
      *            The version to merge
+     *
+     * @throws JiraException sth
      */
     public void mergeWith(Version version) throws JiraException {
     
@@ -177,11 +179,12 @@ public class Version extends Resource {
     }
 
     /**
-    * Copies the version to the given project
-    * 
-    * @param project
-    *            The project the version will be copied to
-    */
+     * Copies the version to the given project
+     *
+     * @param project The project the version will be copied to
+     *
+     * @throws JiraException sth
+     */
     public void copyTo(Project project) throws JiraException {
     
         JSONObject req = new JSONObject();

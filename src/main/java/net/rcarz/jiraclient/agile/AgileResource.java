@@ -68,6 +68,7 @@ public abstract class AgileResource {
     /**
      * Gets an Agile resource from the given object.
      *
+     * @param <T> generic type
      * @param type       Resource data type
      * @param r          a JSONObject instance
      * @param restclient REST client instance
@@ -102,6 +103,7 @@ public abstract class AgileResource {
      * @param ra         a JSONArray instance
      * @param restclient REST client instance
      * @param listName   The name of the list of items from the JSON result.
+     * @param <T>     generic type
      * @return a list of Resources found in ra
      * @throws JiraException when the retrieval fails
      */
@@ -282,6 +284,7 @@ public abstract class AgileResource {
      * other attributes.
      *
      * @param json The JSON object to read.
+     * @throws JiraException when sth goes wrong
      */
     void deserialize(JSONObject json) throws JiraException {
 

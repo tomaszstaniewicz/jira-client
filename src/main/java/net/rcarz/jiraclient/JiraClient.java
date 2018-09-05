@@ -47,7 +47,7 @@ public class JiraClient {
      * Creates a JIRA client.
      *
      * @param uri Base URI of the JIRA server
-     * @throws JiraException 
+     * @throws JiraException when sth goes wrong
      */
     public JiraClient(String uri) throws JiraException {
         this(null, uri, null);
@@ -58,7 +58,7 @@ public class JiraClient {
      *
      * @param uri Base URI of the JIRA server
      * @param creds Credentials to authenticate with
-     * @throws JiraException 
+     * @throws JiraException when sth goes wrong
      */
     public JiraClient(String uri, ICredentials creds) throws JiraException {
         this(null, uri, creds);
@@ -70,7 +70,7 @@ public class JiraClient {
      * @param httpClient Custom HttpClient to be used
      * @param uri Base URI of the JIRA server
      * @param creds Credentials to authenticate with
-     * @throws JiraException 
+     * @throws JiraException when sth goes wrong
      */
     public JiraClient(HttpClient httpClient, String uri, ICredentials creds) throws JiraException {
         if (httpClient == null) {
@@ -378,7 +378,7 @@ public class JiraClient {
      * Retrieve the jira filter with the supplied id.
      * @param id id of the filter to retreive.
      * @return The Jira filter with the supplied id
-     * @throws JiraException
+     * @throws JiraException when sth goes wrong
      */
     public Filter getFilter(final String id) throws JiraException {
         return  Filter.get(restclient, id);
@@ -387,7 +387,7 @@ public class JiraClient {
     /**
      *
      * @return a list of all priorities available in the Jira installation
-     * @throws JiraException
+     * @throws JiraException when sth goes wrong
      */
     public List<Priority> getPriorities() throws JiraException {
         try {

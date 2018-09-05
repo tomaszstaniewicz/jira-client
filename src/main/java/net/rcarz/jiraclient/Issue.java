@@ -57,6 +57,7 @@ public class Issue extends Resource {
          * Executes the create action (issue includes all fields).
          *
          * @throws JiraException when the create fails
+         * @return issue
          */
         public Issue execute() throws JiraException {
             return executeCreate(null);
@@ -76,6 +77,7 @@ public class Issue extends Resource {
          * </ul>
          *
          * @throws JiraException when the create fails
+         * @return issue
          */
         public Issue execute(String includedFields) throws JiraException {
             return executeCreate(includedFields);
@@ -1039,6 +1041,8 @@ public class Issue extends Resource {
      * @param body Comment text
      *
      * @throws JiraException when the comment creation fails
+     *
+     * @return comment
      */
     public Comment addComment(String body) throws JiraException {
         return addComment(body, null, null);
@@ -1052,6 +1056,8 @@ public class Issue extends Resource {
      * @param visName Name of the role or group to limit visibility to
      *
      * @throws JiraException when the comment creation fails
+     *
+     * @return comment
      */
     public Comment addComment(String body, String visType, String visName)
         throws JiraException {
@@ -1087,7 +1093,7 @@ public class Issue extends Resource {
    * @param comment provided comment
    * @param startDate provided start date
    * @param timeSpentSeconds provided time spent. This cannot be lower than 1m inute
-   * @return
+   * @return worklog
    * @throws JiraException when worklog creation fails
    */
     public WorkLog addWorkLog(String comment, DateTime startDate, long timeSpentSeconds) throws JiraException {

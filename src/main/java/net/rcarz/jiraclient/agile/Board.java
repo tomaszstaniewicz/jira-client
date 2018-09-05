@@ -40,6 +40,7 @@ public class Board extends AgileResource {
      *
      * @param restclient REST client instance
      * @param json       JSON payload
+     * @throws JiraException when sth goes wrong
      */
     protected Board(RestClient restclient, JSONObject json) throws JiraException {
         super(restclient, json);

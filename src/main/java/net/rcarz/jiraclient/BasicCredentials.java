@@ -35,8 +35,8 @@ public class BasicCredentials implements ICredentials {
     /**
      * Creates new basic HTTP credentials.
      *
-     * @param username
-     * @param password
+     * @param username username
+     * @param password password
      */
     public BasicCredentials(String username, String password) {
         this.username = username;

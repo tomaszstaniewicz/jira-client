@@ -336,7 +336,7 @@ public class RestClient {
      * Content-Type header. You should not use this function when proper JSON
      * is expected.
      *
-     * @see https://jira.atlassian.com/browse/JRA-29304
+     * @see <a href="https://jira.atlassian.com/browse/JRA-29304"></a>
      *
      * @param uri Full URI of the remote endpoint
      * @param payload Raw string to send to the remote service
@@ -395,9 +395,11 @@ public class RestClient {
      * @param path Full URI of the remote endpoint
      * @param file java.io.File
      * 
-     * @throws URISyntaxException 
-     * @throws IOException 
-     * @throws RestException 
+     * @throws URISyntaxException ex
+     * @throws IOException ex
+     * @throws RestException ex
+     *
+     * @return json
      */
     public JSON post(String path, File file) throws RestException, IOException, URISyntaxException{
         return request(new HttpPost(buildURI(path)), file);
@@ -409,9 +411,11 @@ public class RestClient {
      * @param path    Full URI of the remote endpoint
      * @param attachments   the name of the attachment
      *
-     * @throws URISyntaxException
-     * @throws IOException
-     * @throws RestException
+     * @throws URISyntaxException ex
+     * @throws IOException ex
+     * @throws RestException ex
+     *
+     * @return json
      */
     public JSON post(String path, Issue.NewAttachment... attachments)
         throws RestException, IOException, URISyntaxException

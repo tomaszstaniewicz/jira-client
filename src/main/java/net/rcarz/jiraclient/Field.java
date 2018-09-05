@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -99,8 +100,8 @@ public final class Field {
         /**
          * Initialises the value tuple.
          *
-         * @param type
-         * @param value
+         * @param type - type
+         * @param value - value
          */
         public ValueTuple(String type, Object value) {
             this.type = type;
@@ -110,8 +111,8 @@ public final class Field {
         /**
          * Initialises the value tuple.
          *
-         * @param type
-         * @param value
+         * @param type - type
+         * @param value - value
          */
         public ValueTuple(ValueType type, Object value) {
             this(type.toString(), value);
@@ -301,12 +302,11 @@ public final class Field {
     }
 
     /**
-     +     * Gets a long from the given object.
-     +     *
-     +     * @param i a Long or an Integer instance
-     +     *
-     +     * @return a long primitive or 0 if i isn't a Long or an Integer instance
-     +     */
+     * Gets a long from the given object.
+     *
+     * @param i a Long or an Integer instance
+     * @return a long primitive or 0 if i isn't a Long or an Integer instance
+     */
     public static long getLong(Object i) {
         long result = 0;
         if (i instanceof Long) {
@@ -320,6 +320,8 @@ public final class Field {
     /**
      * Gets a generic map from the given object.
      *
+     * @param <TK> - generic type
+     * @param <TV> - generic type
      * @param keytype Map key data type
      * @param valtype Map value data type
      * @param m a JSONObject instance
@@ -346,6 +348,7 @@ public final class Field {
     /**
      * Gets a JIRA resource from the given object.
      *
+     * @param <T> generic type
      * @param type Resource data type
      * @param r a JSONObject instance
      * @param restclient REST client instance
@@ -361,6 +364,7 @@ public final class Field {
     /**
      * Gets a JIRA resource from the given object.
      *
+     * @param <T> generic type
      * @param type Resource data type
      * @param r a JSONObject instance
      * @param restclient REST client instance
@@ -468,6 +472,7 @@ public final class Field {
     /**
      * Gets a list of JIRA resources from the given object.
      *
+     * @param <T> generic type
      * @param type Resource data type
      * @param ra a JSONArray instance
      * @param restclient REST client instance
@@ -483,6 +488,7 @@ public final class Field {
     /**
      * Gets a list of JIRA resources from the given object.
      *
+     * @param <T> generic type
      * @param type Resource data type
      * @param ra a JSONArray instance
      * @param restclient REST client instance
@@ -590,6 +596,8 @@ public final class Field {
      * @param iter Iterable type containing field values
      * @param type Name of the item type
      * @param custom Name of the custom type
+     *
+     * @throws JiraException when sth goes wrong
      *
      * @return a JSON-encoded array of items
      */
@@ -724,6 +732,9 @@ public final class Field {
                 json.put(tuple.type, tuple.value.toString());
                 return json.toString();
             }
+            else if (m.type.equals("option")) {
+                return toJsonMap((Collections.singletonList(value)));
+            }
 
             return value.toString();
         } else if (m.type.equals("timetracking")) {
@@ -733,10 +744,14 @@ public final class Field {
                 return ((TimeTracking) value).toJsonObject();
         } else if (m.type.equals("number")) {
             if (value == null) //Non mandatory number fields can be set to null
-                return JSONNull.getInstance(); 
-            else if(!(value instanceof java.lang.Integer) && !(value instanceof java.lang.Double) && !(value 
-                    instanceof java.lang.Float) && !(value instanceof java.lang.Long) )
-            {
+                return JSONNull.getInstance();
+            else if (!(value instanceof java.lang.Integer) && !(value instanceof java.lang.Double) && !(value
+                    instanceof java.lang.Float) && !(value instanceof java.lang.Long)) {
+
+                if (value instanceof String) {
+                    return parseStringValue(name, (String) value);
+                }
+
                 throw new JiraException("Field '" + name + "' expects a Numeric value");
             }
             return value;
@@ -762,6 +777,15 @@ public final class Field {
         }
 
         throw new UnsupportedOperationException(m.type + " is not a supported field type");
+    }
+
+    private static Object parseStringValue(String name, String value) throws JiraException {
+        String potentialNumber = value.replace(",", ".");
+        try {
+            return Double.parseDouble(potentialNumber);
+        } catch (NumberFormatException e){
+            throw new JiraException("Field '" + name + "' expects a Numeric value");
+        }
     }
 
     /**

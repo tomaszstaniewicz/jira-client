@@ -49,6 +49,7 @@ public abstract class Resource {
 
     /**
      * Sets the JIRA REST API revision number.
+     * @param apirev apirev
      */
     public static void setApiRev(String apirev) {
         Resource.apirev = apirev;
@@ -56,6 +57,7 @@ public abstract class Resource {
 
     /**
      * Resource base URI with API revision number.
+     * @return baseUri
      */
     public static String getBaseUri() {
         return String.format("/rest/api/%s/", apirev);
@@ -63,6 +65,7 @@ public abstract class Resource {
 
     /**
      * Resource base URI with API revision number.
+     * @return authUri
      */
     public static String getAuthUri() {
         return String.format("/rest/auth/%s/", apirev);
@@ -70,6 +73,7 @@ public abstract class Resource {
 
     /**
      * Internal JIRA ID.
+     * @return id
      */
     public String getId() {
         return id;
@@ -77,6 +81,7 @@ public abstract class Resource {
 
     /**
      * REST API resource URL.
+     * @return self
      */
     public String getUrl() {
         return self;
@@ -84,6 +89,7 @@ public abstract class Resource {
 
     /**
      * Resource URL.
+     * @return self
      */
     public String getSelf() {
         return self;

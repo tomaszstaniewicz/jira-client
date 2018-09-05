@@ -48,6 +48,7 @@ public class Comment extends Resource {
      *
      * @param restclient REST client instance
      * @param json JSON payload
+     * @param issueKey issue key
      */
     protected Comment(RestClient restclient, JSONObject json, String issueKey) {
         super(restclient);
@@ -102,7 +103,6 @@ public class Comment extends Resource {
     /**
      * Updates the comment body.
      *
-     * @param issue associated issue record
      * @param body Comment text
      *
      * @throws JiraException when the comment update fails
@@ -114,7 +114,6 @@ public class Comment extends Resource {
     /**
      * Updates the comment body with limited visibility.
      *
-     * @param issue associated issue record
      * @param body Comment text
      * @param visType Target audience type (role or group)
      * @param visName Name of the role or group to limit visibility to

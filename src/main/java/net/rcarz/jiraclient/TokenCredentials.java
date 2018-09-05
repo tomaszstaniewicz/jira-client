@@ -37,8 +37,8 @@ public class TokenCredentials implements ICredentials {
     /**
      * Creates new basic HTTP credentials.
      *
-     * @param username
-     * @param password
+     * @param username username
+     * @param password password
      */
     public TokenCredentials(String username, String password) {
         this.username = username;
