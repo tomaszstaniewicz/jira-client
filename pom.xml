@@ -3,7 +3,7 @@
 
   <groupId>io.github.tomaszstaniewicz</groupId>
   <artifactId>jira-client</artifactId>
-  <version>0.7-RELEASE</version>
+  <version>0.7.1-RELEASE</version>
   <packaging>jar</packaging>
 
   <name>jira-client</name>
@@ -56,6 +56,12 @@
       <artifactId>httpmime</artifactId>
       <version>4.2.5</version>
     </dependency>
+
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+          <version>3.8</version>
+      </dependency>
 
     <dependency>
       <groupId>net.sf.json-lib</groupId>
@@ -162,6 +168,14 @@
                     </goals>
                 </execution>
             </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>8</source>
+                <target>8</target>
+            </configuration>
         </plugin>
     </plugins>
   </build>

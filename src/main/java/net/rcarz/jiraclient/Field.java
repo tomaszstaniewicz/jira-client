@@ -22,6 +22,7 @@ package net.rcarz.jiraclient;
 import java.lang.Iterable;
 import java.lang.UnsupportedOperationException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,7 +31,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
+import net.rcarz.utils.datetime.DateTimeResolver;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONNull;
@@ -587,6 +590,7 @@ public final class Field {
         if (dateStr.length() > DATE_FORMAT.length()) {
             df = new SimpleDateFormat(DATETIME_FORMAT);
         }
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df.parse(dateStr, new ParsePosition(0));
     }
 
@@ -691,7 +695,18 @@ public final class Field {
         } else if (m.type.equals("datetime")) {
             if (value == null)
                 return JSONNull.getInstance();
-            else if (!(value instanceof Timestamp))
+
+            if (value instanceof String) {
+                try {
+                    Date d = new DateTimeResolver().resolveDateTime((String) value);
+                    SimpleDateFormat df = new SimpleDateFormat(DATETIME_FORMAT);
+                    return df.format(d);
+                } catch (ParseException e) {
+                    throw new JiraException("Field '" + name + "' expects a datetime value or format is invalid", e);
+                }
+            }
+
+            if (!(value instanceof Timestamp))
                 throw new JiraException("Field '" + name + "' expects a Timestamp value");
 
             SimpleDateFormat df = new SimpleDateFormat(DATETIME_FORMAT);
