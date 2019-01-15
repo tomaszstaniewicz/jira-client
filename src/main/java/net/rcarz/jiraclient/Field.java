@@ -19,25 +19,21 @@
 
 package net.rcarz.jiraclient;
 
-import java.lang.Iterable;
-import java.lang.UnsupportedOperationException;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONNull;
+import net.sf.json.JSONObject;
+
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
-import net.rcarz.utils.datetime.DateTimeResolver;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONNull;
-import net.sf.json.JsonConfig;
 
 /**
  * Utility functions for translating between JSON and fields.
@@ -634,7 +630,7 @@ public final class Field {
                     itemMap.put(ValueType.NAME.toString(), realValue.toString());
 
                 realResult = itemMap;
-            } else if ( type.equals("option") ||
+            } else if ( type.equals("option") || type.equals("option2") ||
                     (
                     type.equals("string") && custom != null
                     && (custom.equals("com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes") ||
@@ -672,6 +668,10 @@ public final class Field {
         throws JiraException, UnsupportedOperationException {
 
         Meta m = getFieldMetadata(name, editmeta);
+
+        if ("option2".equals(m.type) || "option2".equals(m.items)) {
+            return createValueOfOption2(name, value, editmeta);
+        }
         if (m.type == null)
             throw new JiraException("Field '" + name + "' is missing metadata type");
 
@@ -697,13 +697,7 @@ public final class Field {
                 return JSONNull.getInstance();
 
             if (value instanceof String) {
-                try {
-                    Date d = new DateTimeResolver().resolveDateTime((String) value);
-                    SimpleDateFormat df = new SimpleDateFormat(DATETIME_FORMAT);
-                    return df.format(d);
-                } catch (ParseException e) {
-                    throw new JiraException("Field '" + name + "' expects a datetime value or format is invalid", e);
-                }
+                return value;
             }
 
             if (!(value instanceof Timestamp))
@@ -736,7 +730,7 @@ public final class Field {
                 json.put(ValueType.KEY.toString(), value.toString());
 
             return json.toString();
-        } else if (m.type.equals("string") || (m.type.equals("securitylevel") || m.type.equals("option"))) {
+        } else if (m.type.equals("string") || (m.type.equals("securitylevel") || m.type.equals("option")) || m.type.equals("option2")) {
             if (value == null)
                 return "";
             else if (value instanceof List)
@@ -747,7 +741,7 @@ public final class Field {
                 json.put(tuple.type, tuple.value.toString());
                 return json.toString();
             }
-            else if (m.type.equals("option")) {
+            else if (m.type.equals("option") || m.type.equals("option2")) {
                 return toJsonMap((Collections.singletonList(value)));
             }
 
@@ -760,8 +754,8 @@ public final class Field {
         } else if (m.type.equals("number")) {
             if (value == null) //Non mandatory number fields can be set to null
                 return JSONNull.getInstance();
-            else if (!(value instanceof java.lang.Integer) && !(value instanceof java.lang.Double) && !(value
-                    instanceof java.lang.Float) && !(value instanceof java.lang.Long)) {
+            else if (!(value instanceof Integer) && !(value instanceof Double) && !(value
+                    instanceof Float) && !(value instanceof Long)) {
 
                 if (value instanceof String) {
                     return parseStringValue(name, (String) value);
@@ -792,6 +786,63 @@ public final class Field {
         }
 
         throw new UnsupportedOperationException(m.type + " is not a supported field type");
+    }
+
+    private static Object createValueOfOption2(String name, Object aSelectedOptionsValues, JSONObject editmeta) throws JiraException {
+
+        JSONObject fieldMeta = (JSONObject) editmeta.get(name);
+        JSONArray allowedValues = (JSONArray) fieldMeta.get("allowedValues");
+
+        if (!allowedValues.isEmpty()) {
+            if (isMultiSelect(name, editmeta)) {
+                HashSet<String> selectedOptionsValues = new HashSet<>((List<String>) aSelectedOptionsValues);
+                return createMultiSelectValue(selectedOptionsValues, allowedValues);
+            }
+
+            String selectedOptionValue = (String) aSelectedOptionsValues;
+            return createSingleSelectValue(selectedOptionValue, allowedValues, name);
+        }
+
+        throw new NoSuchAllowedValueException(String.format("Values %s are not allowed form field %s",
+                aSelectedOptionsValues.toString(), name));
+    }
+
+    private static boolean isMultiSelect(String name, JSONObject editmeta) throws JiraException {
+        Meta fieldMetadata = getFieldMetadata(name, editmeta);
+        return "array".equals(fieldMetadata.type);
+    }
+
+    private static Long createSingleSelectValue(String selectedOptionValue, JSONArray allowedValues, String fieldName)
+            throws NoSuchAllowedValueException {
+
+        for (Object o : allowedValues) {
+            JSONObject allowedValue = (JSONObject) o;
+            Long allowedValueId = allowedValue.getLong("id");
+            String allowedValueValue = allowedValue.getString("value");
+
+            if ((selectedOptionValue.equals(allowedValueValue))) {
+                return allowedValueId;
+            }
+        }
+
+        throw new NoSuchAllowedValueException(String.format("Value %s are not allowed form field %s", selectedOptionValue, fieldName));
+
+    }
+
+    private static JSONArray createMultiSelectValue(HashSet<String> selectedOptionsValues, JSONArray allowedValues) {
+        JSONArray selectedOptionsIds = new JSONArray();
+
+        for (Object o : allowedValues) {
+            JSONObject allowedValue = (JSONObject) o;
+            Long allowedValueId = allowedValue.getLong("id");
+            String allowedValueValue = allowedValue.getString("value");
+
+            if ((selectedOptionsValues.contains(allowedValueValue))) {
+                selectedOptionsIds.add(allowedValueId);
+            }
+        }
+
+        return selectedOptionsIds;
     }
 
     private static Object parseStringValue(String name, String value) throws JiraException {

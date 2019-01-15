@@ -19,20 +19,25 @@
 
 package net.rcarz.jiraclient;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import net.rcarz.utils.WorklogUtils;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * Represents a JIRA issue.
@@ -338,12 +343,15 @@ public class Issue extends Resource {
      */
     public final class FluentUpdate {
 
-        Map<String, Object> fields = new HashMap<String, Object>();
-        Map<String, List> fieldOpers = new HashMap<String, List>();
-        JSONObject editmeta = null;
+        private boolean overrideScreenSecurity;
 
-        private FluentUpdate(JSONObject editmeta) {
-            this.editmeta = editmeta;
+        Map<String, Object> fields = new HashMap<>();
+        Map<String, List> fieldOpers = new HashMap<>();
+        Map<String, String> requestParams = new HashMap<>();
+        JSONObject editmetaOrCreatemeta;
+
+        private FluentUpdate(JSONObject editmetaOrCreatemeta) {
+            this.editmetaOrCreatemeta = editmetaOrCreatemeta;
         }
 
         /**
@@ -359,12 +367,12 @@ public class Issue extends Resource {
                 throw new JiraException("No fields were given for update");
 
             for (Map.Entry<String, Object> ent : fields.entrySet()) {
-                Object newval = Field.toJson(ent.getKey(), ent.getValue(), editmeta);
+                Object newval = Field.toJson(ent.getKey(), ent.getValue(), editmetaOrCreatemeta);
                 fieldmap.put(ent.getKey(), newval);
             }
 
             for (Map.Entry<String, List> ent : fieldOpers.entrySet()) {
-                Object newval = Field.toJson(ent.getKey(), ent.getValue(), editmeta);
+                Object newval = Field.toJson(ent.getKey(), ent.getValue(), editmetaOrCreatemeta);
                 updatemap.put(ent.getKey(), newval);
             }
 
@@ -377,7 +385,10 @@ public class Issue extends Resource {
                 req.put("update", updatemap);
 
             try {
-                restclient.put(getRestUri(key), req);
+                if (overrideScreenSecurity) {
+                    requestParams.put("overrideScreenSecurity", "true");
+                }
+                restclient.put(getRestUri(key), requestParams, req);
             } catch (Exception ex) {
                 throw new JiraException("Failed to update issue " + key, ex);
             }
@@ -426,6 +437,16 @@ public class Issue extends Resource {
          */
         public FluentUpdate fieldRemove(String name, Object value) {
             return fieldOperation("remove", name, value);
+        }
+
+        public FluentUpdate overrideEditableFlag(boolean overrideEditableFlag) {
+            requestParams.put("overrideEditableFlag", String.valueOf(overrideEditableFlag));
+            return this;
+        }
+
+        public FluentUpdate notifyUsers(boolean notifyUsers) {
+            requestParams.put("notifyUsers", String.valueOf(notifyUsers));
+            return this;
         }
     }
 
@@ -1473,6 +1494,19 @@ public class Issue extends Resource {
      */
     public FluentUpdate update() throws JiraException {
         return new FluentUpdate(getEditMetadata());
+    }
+
+    /**
+     * Begins an update field chain with .
+     *
+     * @return a fluent update instance
+     *
+     * @throws JiraException when the client fails to retrieve issue createmeta
+     */
+    public FluentUpdate updateOverridingScreenSecurity() throws JiraException {
+        FluentUpdate fluentUpdate = new FluentUpdate(getCreateMetadata(this.restclient, this.project.getKey(), this.issueType.getName()));
+        fluentUpdate.overrideScreenSecurity = true;
+        return fluentUpdate;
     }
 
     /**

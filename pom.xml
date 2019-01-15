@@ -3,7 +3,7 @@
 
   <groupId>io.github.tomaszstaniewicz</groupId>
   <artifactId>jira-client</artifactId>
-  <version>0.7.1-RELEASE</version>
+  <version>0.7.3-RELEASE</version>
   <packaging>jar</packaging>
 
   <name>jira-client</name>

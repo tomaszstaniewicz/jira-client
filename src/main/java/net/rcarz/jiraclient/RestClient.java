@@ -455,6 +455,25 @@ public class RestClient {
 
         return put(buildURI(path), payload);
     }
+
+    /**
+     * Executes an HTTP PUT with the given path and payload.
+     *
+     * @param path Path to be appended to the URI supplied in the construtor
+     * @param params params to be appended to the URI
+     * @param payload JSON-encoded data to send to the remote service
+     *
+     * @return JSON-encoded result or null when there's no content returned
+     *
+     * @throws RestException when an HTTP-level error occurs
+     * @throws IOException when an error reading the response occurs
+     * @throws URISyntaxException when an error occurred appending the path to the URI
+     */
+    public JSON put(String path,  Map<String, String> params, JSON payload)
+        throws RestException, IOException, URISyntaxException {
+
+        return put(buildURI(path, params), payload);
+    }
     
     /**
      * Exposes the http client.
