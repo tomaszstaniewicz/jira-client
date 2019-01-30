@@ -9,7 +9,7 @@ public class Utils {
         JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON("{\n" +
         "  \"expand\": \"renderedFields,names,schema,transitions,operations,editmeta,changelog\",\n" +
         "  \"id\": \"10742\",\n" +
-        "  \"self\": \"https://brainbubble.atlassian.net/rest/api/latest/issue/10742\",\n" +
+        "  \"self\": \"https://brainbubble.atlassian.net/rest/api/2/issue/10742\",\n" +
         "  \"key\": \"FILTA-43\",\n" +
         "  \"fields\": {\n" +
         "    \"progress\": {\n" +
@@ -209,7 +209,7 @@ public class Utils {
                 "   \"total\":2,\n" +
                 "   \"worklogs\":[  \n" +
                 "      {  \n" +
-                "         \"self\":\"https://brainbubble.atlassian.net/rest/api/latest/issue/10742/worklog/45517\",\n" +
+                "         \"self\":\"https://brainbubble.atlassian.net/rest/api/2/issue/10742/worklog/45517\",\n" +
                 "         \"author\":{  \n" +
                 "            \"self\":\"https://brainbubble.atlassian.net/rest/api/2/user?username=joseph\", \n" +
                 "            \"name\":\"joseph\",\n" +
@@ -243,7 +243,7 @@ public class Utils {
                 "         \"id\":\"45517\"\n" +
                 "      },\n" +
                 "      {  \n" +
-                "         \"self\":\"https://brainbubble.atlassian.net/rest/api/latest/issue/10742/worklog/45518\",\n" +
+                "         \"self\":\"https://brainbubble.atlassian.net/rest/api/2/issue/10742/worklog/45518\",\n" +
                 "         \"author\":{  \n" +
                 "            \"self\":\"https://brainbubble.atlassian.net/rest/api/2/user?username=joseph\",\n" +
                 "            \"name\":\"joseph\",\n" +

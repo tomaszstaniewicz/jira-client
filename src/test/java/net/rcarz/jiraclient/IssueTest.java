@@ -150,7 +150,7 @@ public class IssueTest {
         final TestableRestClient restClient = new TestableRestClient();
         Issue issue = new Issue(restClient, Utils.getTestIssue());
         issue.addRemoteLink("test-url", "test-title", "test-summary");
-        assertEquals("/rest/api/latest/issue/FILTA-43/remotelink", restClient.postPath);
+        assertEquals("/rest/api/2/issue/FILTA-43/remotelink", restClient.postPath);
         assertEquals("{\"object\":{\"url\":\"test-url\",\"title\":\"test-title\",\"summary\":\"test-summary\"}}", restClient.postPayload.toString(0));
     }
 
@@ -168,7 +168,7 @@ public class IssueTest {
                 .icon("icon", "icon-url")
                 .status(true, "status-icon", "status-title", "status-url")
                 .create();
-        assertEquals("/rest/api/latest/issue/FILTA-43/remotelink", restClient.postPath);
+        assertEquals("/rest/api/2/issue/FILTA-43/remotelink", restClient.postPath);
         assertEquals(
                 "{\"globalId\":\"gid\"," +
                 "\"application\":" +

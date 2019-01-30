@@ -921,6 +921,45 @@ public class Issue extends Resource {
         return projects.get(0).getIssueTypes().get(0).getFields();
     }
 
+    public static JSONObject getCreateMetadata(
+            RestClient restclient, Long projectId, Long issueTypeId) throws JiraException {
+
+        JSON result = null;
+
+        try {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("expand", "projects.issuetypes.fields");
+            params.put("projectIds", projectId.toString());
+            params.put("issuetypeIds", issueTypeId.toString());
+            URI createuri = restclient.buildURI(
+                    getBaseUri() + "issue/createmeta",
+                    params);
+            result = restclient.get(createuri);
+        } catch (Exception ex) {
+            throw new JiraException("Failed to retrieve issue metadata", ex);
+        }
+
+        if (!(result instanceof JSONObject))
+            throw new JiraException("JSON payload is malformed");
+
+        JSONObject jo = (JSONObject)result;
+
+        if (jo.isNullObject() || !jo.containsKey("projects") ||
+                !(jo.get("projects") instanceof JSONArray))
+            throw new JiraException("Create metadata is malformed");
+
+        List<Project> projects = Field.getResourceArray(
+                Project.class,
+                (JSONArray)jo.get("projects"),
+                restclient);
+
+        if (projects.isEmpty() || projects.get(0).getIssueTypes().isEmpty())
+            throw new JiraException("Project '"+ projectId + "'  or issue type '" + issueTypeId +
+                    "' missing from create metadata. Do you have enough permissions?");
+
+        return projects.get(0).getIssueTypes().get(0).getFields();
+    }
+
     private JSONObject getEditMetadata() throws JiraException {
         JSON result = null;
 
@@ -1504,7 +1543,10 @@ public class Issue extends Resource {
      * @throws JiraException when the client fails to retrieve issue createmeta
      */
     public FluentUpdate updateOverridingScreenSecurity() throws JiraException {
-        FluentUpdate fluentUpdate = new FluentUpdate(getCreateMetadata(this.restclient, this.project.getKey(), this.issueType.getName()));
+        FluentUpdate fluentUpdate = new FluentUpdate(getCreateMetadata(this.restclient,
+                Long.parseLong(this.project.getId()),
+                Long.parseLong(this.issueType.getId())));
+
         fluentUpdate.overrideScreenSecurity = true;
         return fluentUpdate;
     }

@@ -24,7 +24,7 @@ package net.rcarz.jiraclient;
  */
 public abstract class Resource {
 
-    public static final String DEFAULT_API_REV = "latest";
+    public static final String DEFAULT_API_REV = "2";
     public static String apirev = DEFAULT_API_REV;
 
     protected RestClient restclient = null;

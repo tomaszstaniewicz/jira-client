@@ -98,37 +98,37 @@ public class TransitionTest {
                         "      ],\n" +
                         "      \"allowedValues\": [\n" +
                         "        {\n" +
-                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/latest/resolution/1\",\n" +
+                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/2/resolution/1\",\n" +
                         "          \"name\": \"Fixed\",\n" +
                         "          \"id\": \"1\"\n" +
                         "        },\n" +
                         "        {\n" +
-                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/latest/resolution/2\",\n" +
+                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/2/resolution/2\",\n" +
                         "          \"name\": \"Won\\u0027t Fix\",\n" +
                         "          \"id\": \"2\"\n" +
                         "        },\n" +
                         "        {\n" +
-                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/latest/resolution/3\",\n" +
+                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/2/resolution/3\",\n" +
                         "          \"name\": \"Duplicate\",\n" +
                         "          \"id\": \"3\"\n" +
                         "        },\n" +
                         "        {\n" +
-                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/latest/resolution/4\",\n" +
+                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/2/resolution/4\",\n" +
                         "          \"name\": \"Incomplete\",\n" +
                         "          \"id\": \"4\"\n" +
                         "        },\n" +
                         "        {\n" +
-                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/latest/resolution/5\",\n" +
+                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/2/resolution/5\",\n" +
                         "          \"name\": \"Cannot Reproduce\",\n" +
                         "          \"id\": \"5\"\n" +
                         "        },\n" +
                         "        {\n" +
-                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/latest/resolution/10000\",\n" +
+                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/2/resolution/10000\",\n" +
                         "          \"name\": \"Done\",\n" +
                         "          \"id\": \"10000\"\n" +
                         "        },\n" +
                         "        {\n" +
-                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/latest/resolution/10001\",\n" +
+                        "          \"self\": \"https://jira-client.atlassian.net/rest/api/2/resolution/10001\",\n" +
                         "          \"name\": \"Won\\u0027t Do\",\n" +
                         "          \"id\": \"10001\"\n" +
                         "        }\n" +
